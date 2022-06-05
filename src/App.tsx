@@ -1,26 +1,49 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+
+import { FlawLessUI, Loading, useLoading } from 'flawless-ui'
+import axios from 'axios';
+import { FC } from 'react';
+import { useEffect } from 'react';
+
+const api = axios.create({
+  baseURL: 'https://api.selfit.ir/api/Global/v1/'
+})
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <FlawLessUI axiosInstance={api}>
+        <Test />
+      </FlawLessUI>
     </div>
   );
+}
+
+export const Test: FC = props => {
+
+  const isLoading = useLoading()
+
+  useEffect(() => {
+    getData()
+  }, [])
+
+  const getData = async () => {
+    await api.get('Club/ClubGallery?clubId=4c663d25-76de-ec11-8c90-00505681e7a8')
+  }
+
+  return (
+    <h1 onClick={getData}>
+      <Loading url="Club/ClubGallery">
+        {(loading: boolean) => (
+          <>
+            {loading ? 'loading' : 'done'}
+          </>
+        )}
+      </Loading>
+      -
+      {isLoading ? '1' : '2'}
+    </h1>
+  )
 }
 
 export default App;
