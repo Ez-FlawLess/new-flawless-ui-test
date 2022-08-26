@@ -1,18 +1,47 @@
 import './App.css';
 
-import { FlawLessUI, Loading, useLoading } from 'flawless-ui'
-import axios from 'axios';
+import { FlawLessUI, Loading, useLoading, createConfig } from 'flawless-ui'
+import axios, { AxiosRequestConfig } from 'axios';
 import { FC } from 'react';
 import { useEffect } from 'react';
+import { HttpFeedback } from 'flawless-ui';
 
 const api = axios.create({
-  baseURL: 'https://api.selfit.ir/api/Global/v1/'
+  baseURL: 'https://dummyjson.com',
+})
+
+const secondaryApi = axios.create({
+  baseURL: 'https://api.selfit.ir/api/Global/v1/',
+})
+
+const config = createConfig({
+  axiosInstance: {
+    instance: api,
+    onConfig: (d: AxiosRequestConfig<any>) => {
+      console.log('data config')
+      return d
+    },
+  },
+  secondaryAxiosInstances: [{
+    instance: secondaryApi,
+    onConfig: (d: AxiosRequestConfig<any>) => {
+      console.log('data config')
+      return d
+    },
+  }],
+  components: {
+    alerts: {
+      success: (props: any) => <h1>{props.message}</h1>,
+      error: (props: any) => <h1>{props.message}</h1>,
+    },
+  },
+  httpTimer: 5000,
 })
 
 function App() {
   return (
     <div className="App">
-      <FlawLessUI axiosInstance={api}>
+      <FlawLessUI config={config}>
         <Test />
       </FlawLessUI>
     </div>
@@ -21,19 +50,22 @@ function App() {
 
 export const Test: FC = props => {
 
-  const isLoading = useLoading()
+  const isLoading = useLoading('Club/ClubGallery')
 
   useEffect(() => {
     getData()
   }, [])
 
   const getData = async () => {
-    await api.get('Club/ClubGallery?clubId=4c663d25-76de-ec11-8c90-00505681e7a8')
+    await api.post('/products/add', {})
   }
 
   return (
     <h1 onClick={getData}>
-      <Loading url="Club/ClubGallery">
+      <HttpFeedback 
+        url='/products/add'
+      />
+      <Loading url="/products/add">
         {(loading: boolean) => (
           <>
             {loading ? 'loading' : 'done'}
