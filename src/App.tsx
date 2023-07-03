@@ -1,47 +1,77 @@
 import './App.css';
 
-import { FlawLessUI, Loading, useLoading } from 'flawless-ui'
+import { FlawLessUI, Loading, useLoading, createConfig, HTTP_METHODS, HttpFeedback, AlertI, useHttp } from 'flawless-ui'
 import axios from 'axios';
-import { FC } from 'react';
+import { FC, ReactElement, ReactNode } from 'react';
 import { useEffect } from 'react';
 
 const api = axios.create({
   baseURL: 'https://api.selfit.ir/api/Global/v1/'
 })
 
+const config = createConfig({
+  axiosInstance: api,
+  httpMethods: [...HTTP_METHODS, 'get'],
+  components: {
+    alerts: {
+      success: (props: AlertI) => <div>S - {props.title} - {props.message}<button onClick={props.onClose}>close</button> {props.props?.hi}</div>,
+      error: (props: AlertI) => <div>E - {props.title} - {props.message}<button onClick={props.onClose}>close</button></div>,
+    }
+  }
+})
+
 function App() {
+
   return (
     <div className="App">
-      <FlawLessUI axiosInstance={api}>
+      <FlawLessUI config={config}>
         <Test />
-      </FlawLessUI>
+      </FlawLessUI>2
     </div>
   );
 }
 
 export const Test: FC = props => {
 
-  const isLoading = useLoading()
+  const {
+    loading,
+    call,
+    Feedback,
+    id,
+  } = useHttp()
 
   useEffect(() => {
     getData()
   }, [])
 
   const getData = async () => {
-    await api.get('Club/ClubGallery?clubId=4c663d25-76de-ec11-8c90-00505681e7a8')
+    await call(api.get('Slider?section=Home&for=Desktop&Size=10&Page=1&Sort=Default'))
   }
 
   return (
-    <h1 onClick={getData}>
-      <Loading url="Club/ClubGallery">
-        {(loading: boolean) => (
-          <>
-            {loading ? 'loading' : 'done'}
-          </>
-        )}
-      </Loading>
-      -
-      {isLoading ? '1' : '2'}
+    <>
+      <Feedback
+        // showSuccess={true}
+      />
+      <h1 onClick={getData}>
+          {loading ? 'loading' : 'done'}
+      </h1>
+      <AnotherTest 
+        id={id}
+      />
+    </>
+  )
+}
+
+export const AnotherTest: FC<{
+  id: number,
+}> = props => {
+
+  const loading = useLoading(props.id)
+
+  return (
+    <h1 >
+        {loading ? 'loading' : 'done'}
     </h1>
   )
 }
