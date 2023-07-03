@@ -1,14 +1,8 @@
 import './App.css';
 
-<<<<<<< HEAD
 import { FlawLessUI, Loading, useLoading, createConfig, HTTP_METHODS, HttpFeedback, AlertI, useHttp } from 'flawless-ui'
 import axios from 'axios';
 import { FC, ReactElement, ReactNode } from 'react';
-=======
-import { FlawLessUI, Loading, useLoading, createConfig } from 'flawless-ui'
-import axios, { AxiosRequestConfig } from 'axios';
-import { FC } from 'react';
->>>>>>> 48382d6ba3034c249c11a591ebd2791dc6a3ccb9
 import { useEffect } from 'react';
 import { HttpFeedback } from 'flawless-ui';
 
@@ -18,30 +12,6 @@ const api = axios.create({
 
 const secondaryApi = axios.create({
   baseURL: 'https://api.selfit.ir/api/Global/v1/',
-})
-
-const config = createConfig({
-  axiosInstance: {
-    instance: api,
-    onConfig: (d: AxiosRequestConfig<any>) => {
-      console.log('data config')
-      return d
-    },
-  },
-  secondaryAxiosInstances: [{
-    instance: secondaryApi,
-    onConfig: (d: AxiosRequestConfig<any>) => {
-      console.log('data config')
-      return d
-    },
-  }],
-  components: {
-    alerts: {
-      success: (props: any) => <h1>{props.message}</h1>,
-      error: (props: any) => <h1>{props.message}</h1>,
-    },
-  },
-  httpTimer: 5000,
 })
 
 const config = createConfig({
