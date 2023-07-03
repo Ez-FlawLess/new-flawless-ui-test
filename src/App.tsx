@@ -4,7 +4,6 @@ import { FlawLessUI, Loading, useLoading, createConfig, HTTP_METHODS, HttpFeedba
 import axios from 'axios';
 import { FC, ReactElement, ReactNode } from 'react';
 import { useEffect } from 'react';
-import { HttpFeedback } from 'flawless-ui';
 
 const api = axios.create({
   baseURL: 'https://dummyjson.com',
